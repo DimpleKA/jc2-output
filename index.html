@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data from MongoDB</title>
+    <style>
+        /* Style for the table */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        /* Style for table header */
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        /* Style for odd rows */
+        tr:nth-child(odd) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Data from MongoDB</h1>
+    <table id="dataTable">
+        <thead>
+            <tr id="headerRow">
+                <!-- Table header will be populated dynamically -->
+            </tr>
+        </thead>
+        <tbody id="dataBody">
+            <!-- Table body will be populated dynamically -->
+        </tbody>
+    </table>
+
+    <script>
+        // Function to fetch data from the API
+        function fetchData() {
+            fetch('http://localhost:5000/api/data')
+                .then(response => response.json())
+                .then(data => {
+                    const dataTable = document.getElementById('dataTable');
+                    const headerRow = document.getElementById('headerRow');
+                    const dataBody = document.getElementById('dataBody');
+
+                    // Clear existing data
+                    headerRow.innerHTML = '';
+                    dataBody.innerHTML = '';
+
+                    // Create table header
+                    const keys = Object.keys(data[0]);
+                    keys.forEach(key => {
+                        const th = document.createElement('th');
+                        th.textContent = key;
+                        headerRow.appendChild(th);
+                    });
+
+                    // Populate table body
+                    data.forEach(item => {
+                        const tr = document.createElement('tr');
+                        keys.forEach(key => {
+                            const td = document.createElement('td');
+                            td.textContent = item[key];
+                            tr.appendChild(td);
+                        });
+                        dataBody.appendChild(tr);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Call the fetchData function when the page loads
+        window.onload = fetchData;
+    </script>
+</body>
+</html>
